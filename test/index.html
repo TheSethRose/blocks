@@ -1,0 +1,35 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Blocks tests</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{--surface-0:#f5f4ef;--surface-1:#fcfcfb;--surface-2:#fff;--text-primary:#0b0b0b;--text-secondary:#52514e;--text-muted:#898781;
+--border:rgba(11,11,11,.1);--border-strong:rgba(11,11,11,.2);--border-stronger:rgba(11,11,11,.4);--border-accent:#85b7eb;
+--text-accent:#185fa5;--bg-accent:#e6f1fb;--bg-accent-muted:rgba(42,120,214,.1);--text-success:#3b6d11;--text-warning:#854f0b;--text-danger:#a32d2d}
+[data-mode=dark]{--surface-0:#0b0b0b;--surface-1:#1a1a19;--surface-2:#222221;--text-primary:#f0efec;--text-secondary:#c3c2b7;--text-muted:#898781;
+--border:rgba(255,255,255,.1);--border-strong:rgba(255,255,255,.2);--border-stronger:rgba(255,255,255,.4);--border-accent:#185fa5;
+--text-accent:#85b7eb;--bg-accent:#0c447c;--bg-accent-muted:rgba(57,135,229,.15);--text-success:#97c459;--text-warning:#ef9f27;--text-danger:#f09595}
+body{margin:0;padding:24px;background:var(--surface-0);color:var(--text-primary);font:16px/1.5 system-ui,sans-serif}
+main{max-width:680px;margin:0 auto;display:grid;gap:56px}
+h1{font-size:13px;font-weight:500;color:var(--text-muted);margin:0 0 12px}
+#out{white-space:pre-wrap;font:12px/1.5 ui-monospace,monospace;max-width:680px;margin:0 auto 40px}
+button{font:inherit;padding:6px 12px;border:1px solid var(--border-strong);border-radius:8px;background:none;color:inherit}
+input[type=search]{font:inherit;height:36px;padding:0 10px;border:1px solid var(--border-strong);border-radius:8px;background:none;color:inherit}
+</style>
+<pre id="out">running…</pre>
+<main id="main"></main>
+<script>
+const NAMES=['triage','whatif','compare','breakdown','plan','trend'],S={};
+const load=src=>new Promise((ok,no)=>{const t=document.createElement('script');t.src=src+'?'+Date.now();t.onload=ok;t.onerror=()=>no(Error('cannot load '+src));document.body.append(t)});
+window.sent=[];window.sendPrompt=t=>{sent.push(t)};
+(async()=>{
+  const q=new URLSearchParams(location.search);
+  if(q.has('dark'))document.documentElement.dataset.mode='dark';
+  if(q.has('dist'))await load('../dist/blocks.js');
+  else for(const m of ['core','facets','knobs','stats','list','table','bars','line','cards'])await load('../runtime/'+m+'.js');
+  const real=Blocks;let cur;
+  window.Blocks=spec=>S[cur]=real(spec);
+  for(cur of NAMES){const sec=document.createElement('section');sec.id=cur;sec.innerHTML=`<h1>${cur}</h1><div class="bk"></div>`;main.append(sec);await load('../examples/'+cur+'.js')}
+  await load('tests.js');
+})().catch(e=>out.textContent='FAIL harness: '+e.message);
+</script>
