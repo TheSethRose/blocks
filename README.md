@@ -4,6 +4,10 @@ A Claude skill for drawing interactive data visuals in chat. It works with the `
 
 Claude writes a short spec: a set of rows and a list of parts. A small runtime draws it. Every part reads the same rows, so when the reader filters, picks a row, opens one or drags a slider, every part updates together.
 
+<img src="docs/triage-dark.png" width="680" alt="A block in the Claude desktop app: severity and area filter chips with counts, stats for showing, picked and picked effort with a meter, a sortable findings table with tick boxes, tone icons, effort bars and a total, and a Fix 2 picked button.">
+
+The spec for that block is [examples/triage.js](examples/triage.js). A shorter version:
+
 ```js
 Blocks({
   summary: 'Review findings. Filter by severity, open one for the reason, tick the ones to fix.',
